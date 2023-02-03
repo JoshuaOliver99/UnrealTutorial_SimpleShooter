@@ -1,0 +1,14 @@
+{
+	"Targets": [
+		{
+			"Name": "SimpleShooter",
+			"Path": "C:\\Users\\Joshua Simpson\\Documents\\GitHub\\SimpleShooter\\SimpleShooter\\Source\\SimpleShooter.Target.cs",
+			"Type": "Game"
+		},
+		{
+			"Name": "SimpleShooterEditor",
+			"Path": "C:\\Users\\Joshua Simpson\\Documents\\GitHub\\SimpleShooter\\SimpleShooter\\Source\\SimpleShooterEditor.Target.cs",
+			"Type": "Editor"
+		}
+	]
+}
