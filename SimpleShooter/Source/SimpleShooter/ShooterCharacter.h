@@ -28,11 +28,21 @@ public:
 
 private:
 
+	// ----- Movement
 	void MoveForward(float AxisValue);
 	void MoveRight(float AxisValue);
 	void LookUpRate(float AxisValue);
 	void LookRightRate(float AxisValue);
+	void Shoot();
 	
 	UPROPERTY(EditAnywhere)
 	float RotationRate = 70.f;
+
+	// ----- Gun
+	UPROPERTY(EditDefaultsOnly) // (so we dont edit at runtime to not give false impressions)
+	TSubclassOf<class AGun> GunClass;
+
+	UPROPERTY()
+	class AGun* Gun;
+	
 };

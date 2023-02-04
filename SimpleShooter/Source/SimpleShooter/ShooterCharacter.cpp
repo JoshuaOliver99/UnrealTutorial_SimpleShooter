@@ -3,6 +3,7 @@
 
 #include "ShooterCharacter.h"
 
+#include "Gun.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -18,7 +19,16 @@ AShooterCharacter::AShooterCharacter()
 void AShooterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// Spawn gun
+	Gun = GetWorld()->SpawnActor<AGun>(GunClass);
 	
+	// Remove gun mesh from model via bone
+	GetMesh()->HideBoneByName(TEXT("weapon_r"), PBO_None);
+	// Attach the gun to the skeleton socket
+	Gun->AttachToComponent(GetMesh(), FAttachmentTransformRules::KeepRelativeTransform, TEXT("WeaponSocket"));
+	// Set owner of the gun (Important for damage and multiplayer)
+	Gun->SetOwner(this);
 }
 
 // Called every frame
@@ -39,7 +49,7 @@ void AShooterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis(TEXT("LookUp"), this, &APawn::AddControllerPitchInput);
 	PlayerInputComponent->BindAxis(TEXT("LookRight"), this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAction(TEXT("Jump"), IE_Pressed, this, &ACharacter::Jump);
-
+	PlayerInputComponent->BindAction(TEXT("Shoot"), IE_Pressed, this, &AShooterCharacter::Shoot);
 	// Setup player controller specific input
 	PlayerInputComponent->BindAxis(TEXT("LookUpRate"), this, &AShooterCharacter::LookUpRate);
 	PlayerInputComponent->BindAxis(TEXT("LookRightRate"), this, &AShooterCharacter::LookRightRate);
@@ -66,9 +76,8 @@ void AShooterCharacter::LookRightRate(float AxisValue)
 	AddControllerYawInput(AxisValue * RotationRate * GetWorld()->GetDeltaSeconds());
 }
 
-// Unneeded implementation (see SetupPlayerInputComponent)
-//void AShooterCharacter::LookUp(float AxisValue)
-//{
-//	AddControllerPitchInput(AxisValue);
-//}
+void AShooterCharacter::Shoot()
+{
+	Gun->PullTrigger();
+}
 

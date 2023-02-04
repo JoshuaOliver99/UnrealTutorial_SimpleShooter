@@ -3,6 +3,9 @@
 
 #include "Gun.h"
 
+#include "ShooterCharacter.h"
+#include "Evaluation/Blending/MovieSceneBlendType.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -16,6 +19,39 @@ AGun::AGun()
 
 	Mesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Mesh"));
 	Mesh->SetupAttachment(Root);
+}
+
+void AGun::PullTrigger()
+{
+	UGameplayStatics::SpawnEmitterAttached(MuzzleFlash, Mesh, TEXT("MuzzleFlashSocket"));
+	
+	// ----- Getting the player view point
+	APawn* OwnerPawn = 	Cast<APawn>(GetOwner());
+	if (OwnerPawn == nullptr)
+	{
+		return;
+	}
+
+	AController* OwnerController = OwnerPawn->GetController();
+	if (OwnerController == nullptr)
+	{
+		return;
+	}
+
+	FVector Location;
+	FRotator Rotation;
+	OwnerController->GetPlayerViewPoint(Location, Rotation);
+
+	
+	// ----- LineTrace
+	FVector End = Location + Rotation.Vector() * MaxRange;
+
+	FHitResult HitResult;
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Location, End, ECC_EngineTraceChannel1))
+	{
+		DrawDebugPoint(GetWorld(), HitResult.Location, 20, FColor::Purple, true);
+	}
+
 }
 
 // Called when the game starts or when spawned
