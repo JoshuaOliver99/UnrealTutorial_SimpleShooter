@@ -4,6 +4,7 @@
 #include "Gun.h"
 
 #include "ShooterCharacter.h"
+#include "Engine/DamageEvents.h"
 #include "Evaluation/Blending/MovieSceneBlendType.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -47,9 +48,20 @@ void AGun::PullTrigger()
 	FVector End = Location + Rotation.Vector() * MaxRange;
 
 	FHitResult HitResult;
-	if (GetWorld()->LineTraceSingleByChannel(HitResult, Location, End, ECC_EngineTraceChannel1))
+	if (GetWorld()->LineTraceSingleByChannel(HitResult, Location, End, ECC_GameTraceChannel1))
 	{
-		DrawDebugPoint(GetWorld(), HitResult.Location, 20, FColor::Purple, true);
+		// Effect...
+		FVector ShotDirection = -Rotation.Vector();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticle, HitResult.Location, ShotDirection.Rotation());
+
+		// Damage...
+		if (HitResult.GetActor() != nullptr)
+		{
+			FPointDamageEvent DamageEvent(Damage, HitResult, ShotDirection, nullptr);
+			HitResult.GetActor()->TakeDamage(Damage, DamageEvent, OwnerController, this);
+		}
+		
+		
 	}
 
 }
