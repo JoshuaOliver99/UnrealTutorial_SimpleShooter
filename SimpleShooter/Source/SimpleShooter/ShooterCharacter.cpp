@@ -4,6 +4,7 @@
 #include "ShooterCharacter.h"
 
 #include "Gun.h"
+#include "Components/CapsuleComponent.h"
 #include "EnvironmentQuery/EnvQueryTypes.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -65,6 +66,12 @@ float AShooterCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Dama
 	Health -= DamageToApply;
 	UE_LOG(LogTemp, Warning, TEXT("Health Left: %f"), Health);
 
+	if (IsDead())
+	{
+		DetachFromControllerPendingDestroy();
+		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	
 	return DamageToApply;
 }
 
