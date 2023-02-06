@@ -29,20 +29,25 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	USceneComponent* Root;
-
-	// Note: the guns in this project are weird and are USkeletalMeshComponent
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere) 	// (Guns in this project are weird and are USkeletalMeshComponent)
 	USkeletalMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* MuzzleFlash;
+	UPROPERTY(EditAnywhere)
+	USoundBase* MuzzleSound;
 	
 	UPROPERTY(EditAnywhere)
 	class UParticleSystem* ImpactParticle;
-
+	UPROPERTY(EditAnywhere)
+	USoundBase* ImpactSound;
+	
 	UPROPERTY(EditAnywhere)
 	float MaxRange = 1000.f;
-
 	UPROPERTY(EditAnywhere)
 	float Damage = 10.f;
+
+	bool GunTrace(FHitResult& OutHitResult, FVector& OutShotDirection);
+
+	AController* GetOwnerController() const;
 };

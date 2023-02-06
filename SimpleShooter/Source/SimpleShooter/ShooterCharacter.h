@@ -31,6 +31,9 @@ public:
 	UFUNCTION(BlueprintPure)
 	bool IsDead() const;
 	
+	UFUNCTION(BlueprintPure)
+	float GetHealthPercent() const;
+	
 	void Shoot();
 	
 private:
@@ -50,7 +53,6 @@ private:
 
 	UPROPERTY()
 	class AGun* Gun;
-
 
 	// ----- Health
 	UPROPERTY(EditDefaultsOnly)
